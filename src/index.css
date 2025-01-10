@@ -6,3 +6,15 @@ html,
 body {
   @apply min-h-dvh h-dvh flex items-center justify-center bg-gray-100;
 }
+
+.PLANNED {
+  @apply bg-white shadow-md rounded-lg;
+}
+
+.ONGOING {
+  @apply bg-yellow-100 text-yellow-800;
+}
+
+.DONE {
+  @apply bg-green-100 text-green-800;
+}
