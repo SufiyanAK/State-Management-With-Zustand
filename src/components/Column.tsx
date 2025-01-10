@@ -13,12 +13,12 @@ const Column: FC<ColumnProps> = ({ state }) => {
   const [status, setStatus] = useState<status>('PLANNED')
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   // This is a custom hook that filters tasks based on their status and it is the react solution
-  const tasks = useStore(store => store.tasks)
+  const { tasks, addTask } = useStore(store => store)
 
   const filteredTasks = useMemo(() => tasks.filter(task => task.status === state)
     , [tasks, state])
 
-  const addTask = useStore(store => store.addTask)
+  console.log(tasks);
 
   const handleChange = (value: string) => { setText(value) }
 
@@ -35,7 +35,7 @@ const Column: FC<ColumnProps> = ({ state }) => {
         <button className="px-4 py-2 bg-white rounded hover:bg-green-100 hover:shadow-md duration-150"
           onClick={() => setIsModalOpen(true)}>Add</button>
       </div>
-      {filteredTasks.map((task, index) => <Task key={`${task.title}-${index}`} title={task.title} STATUS={task.status} />)}
+      {filteredTasks.map((task, index) => <Task key={`${task.title}-${index}`} id={task.id} title={task.title} STATUS={task.status} />)}
 
       {/* Modal */}
       <div className={`fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 duration-300 flex items-center justify-center ${isModalOpen ? 'block' : 'hidden'}`}>
@@ -46,7 +46,7 @@ const Column: FC<ColumnProps> = ({ state }) => {
           </div>
           <div className=" flex flex-col mb-4">
             <label htmlFor="status" className="text-lg">Status:</label>
-            <select className="border-2 rounded min-h-10 p-3" id="status" defaultValue="Please Select" value={status} onChange={(e) => handleStatusChange(e.target.value as status)}>
+            <select className="border-2 rounded min-h-10 p-3" id="status" value={status} onChange={(e) => handleStatusChange(e.target.value as status)}>
               {
                 taskStatus.map((status, index) => <option key={`${status}-${index}`} value={status}>{status}</option>)
               }
@@ -55,7 +55,7 @@ const Column: FC<ColumnProps> = ({ state }) => {
           <div className="text-center">
             <button
               onClick={() => {
-                addTask(text, status)
+                addTask(new Date().toISOString(), text, status)
                 setIsModalOpen(false)
                 resetFields()
               }}

@@ -3,20 +3,27 @@ import { create } from "zustand"
 export type status = "PLANNED" | "ONGOING" | "DONE";
 
 export interface Task {
+    id: string;
     title: string;
     status: status;
 }
 
 interface Store {
     tasks: Task[];
-    addTask(title: string, status: status): void;
+    addTask(id: string, title: string, status: status): void;
+    deleteTask(title: string): void;
 }
 
-export const useStore = create<Store>()((set) => ({
+export const useStore = create<Store>()((set) =>
+({
     tasks: [
-        { title: "Task 1", status: "PLANNED" },
-        { title: "Task 2", status: "ONGOING" },
-        { title: "Task 3", status: "DONE" },
+        { id: '1', title: "Task 1", status: "PLANNED" },
+        { id: '2', title: "Task 2", status: "ONGOING" },
+        { id: '3', title: "Task 3", status: "DONE" },
     ],
-    addTask: (title, status) => set((state) => ({ tasks: [...state.tasks, { title, status }] }))
-}))
+    addTask: (id, title, status) => set((state) => ({ tasks: [...state.tasks, { id, title, status }] })),
+    deleteTask: (id) => set((state) => ({
+        tasks: state.tasks.filter(task => task.id !== id)
+    }))
+})
+)
