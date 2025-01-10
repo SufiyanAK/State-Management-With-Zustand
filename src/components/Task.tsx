@@ -1,8 +1,8 @@
 import classNames from "classnames"
 
-const STATUS: string = "DONE"
+// const STATUS: string = "DONE"
 
-const Task = ({ title }: { title: string }) => {
+const Task = ({ title, STATUS }: { title: string, STATUS: string }) => {
     return (
         <div className="bg-white rounded min-h-20 px-4 py-2 flex flex-col justify-between">
             <div>{title}</div>

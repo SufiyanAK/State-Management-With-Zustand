@@ -3,9 +3,9 @@ import Column from "./components/Column"
 function App() {
   return (
     <div className="flex gap-4 rounded-md bg-gray-200 shadow-lg p-6">
-      <Column state="Name" />
-      <Column state="Email" />
-      <Column state="Password" />
+      <Column state="PLANNED" />
+      <Column state="DONE" />
+      <Column state="ONGOING" />
     </div>
 
   )
