@@ -1,6 +1,6 @@
 import { create } from "zustand"
 
-type status = "PLANNED" | "ONGOING" | "DONE";
+export type status = "PLANNED" | "ONGOING" | "DONE";
 
 export interface Task {
     title: string;
@@ -9,6 +9,7 @@ export interface Task {
 
 interface Store {
     tasks: Task[];
+    addTask(title: string, status: status): void;
 }
 
 export const useStore = create<Store>()((set) => ({
@@ -17,4 +18,5 @@ export const useStore = create<Store>()((set) => ({
         { title: "Task 2", status: "ONGOING" },
         { title: "Task 3", status: "DONE" },
     ],
+    addTask: (title, status) => set((state) => ({ tasks: [...state.tasks, { title, status }] }))
 }))
