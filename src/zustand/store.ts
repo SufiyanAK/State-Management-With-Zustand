@@ -1,4 +1,5 @@
 import { create } from "zustand"
+import { devtools, persist } from "zustand/middleware";
 
 export type status = "PLANNED" | "ONGOING" | "DONE";
 
@@ -17,26 +18,21 @@ interface Store {
     moveTask(id: string, status: status): void;
 }
 
-export const useStore = create<Store>()((set) =>
-({
-    tasks: [
-        { id: '1', title: "Task 1", status: "PLANNED" },
-        { id: '2', title: "Task 2", status: "ONGOING" },
-        { id: '3', title: "Task 3", status: "DONE" },
-    ],
-    addTask: (id, title, status) => set((state) => ({ tasks: [...state.tasks, { id, title, status }] })),
+export const useStore = create<Store>()(persist(devtools((set) => ({
+    tasks: [],
+    addTask: (id, title, status) => set((state) => ({ tasks: [...state.tasks, { id, title, status }] }), false, "addTask"),
     deleteTask: (id) => set((state) => ({
         tasks: state.tasks.filter(task => task.id !== id)
-    })),
+    }), false, "deleteTask"),
     draggedTask: null,
-    setDraggedTask: (task) => set({ draggedTask: task }),
+    setDraggedTask: (task) => set({ draggedTask: task }, false, "setDraggedTask"),
     moveTask: (id, status) => set((state) => {
         const task = state.tasks.find(task => task.id === id);
         if (task) {
             task.status = status;
         }
         return { tasks: [...state.tasks] }
-    })
+    }, false, "moveTask")
 
 })
-)
+), { name: "task-app-zustand" }))
