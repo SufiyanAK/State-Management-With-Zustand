@@ -1,17 +1,17 @@
 import { FC, useMemo, useState } from "react";
 import Task from "./Task";
-import { status, useStore } from "../zustand/store";
+import { Status, useStore } from "../zustand/store";
 import classNames from "classnames";
 
 interface ColumnProps {
-  state: status;
+  state: Status;
 }
 
-const taskStatus: Array<status> = ["PLANNED", "ONGOING", "DONE"]
+const taskStatus: Array<Status> = ["PLANNED", "ONGOING", "DONE"]
 
 const Column: FC<ColumnProps> = ({ state }) => {
   const [text, setText] = useState<string>('')
-  const [status, setStatus] = useState<status>('PLANNED')
+  const [status, setStatus] = useState<Status>('PLANNED')
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [drop, setDrop] = useState<boolean>(false)
   // This is a custom hook that filters tasks based on their status and it is the react solution
@@ -22,7 +22,7 @@ const Column: FC<ColumnProps> = ({ state }) => {
 
   const handleChange = (value: string) => { setText(value) }
 
-  const handleStatusChange = (value: status) => { setStatus(value) }
+  const handleStatusChange = (value: Status) => { setStatus(value) }
 
   const resetFields = () => {
     setText('')
@@ -39,7 +39,6 @@ const Column: FC<ColumnProps> = ({ state }) => {
         setDrop(false)
       }}
       onDrop={() => {
-        console.log(draggedTask);
         setDrop(false)
         moveTask(draggedTask!.id, state)
         setDraggedTask(null)
@@ -63,7 +62,7 @@ const Column: FC<ColumnProps> = ({ state }) => {
           </div>
           <div className=" flex flex-col mb-4">
             <label htmlFor="status" className="text-lg">Status:</label>
-            <select className="border-2 rounded min-h-10 p-3" id="status" value={status} onChange={(e) => handleStatusChange(e.target.value as status)}>
+            <select className="border-2 rounded min-h-10 p-3" id="status" value={status} onChange={(e) => handleStatusChange(e.target.value as Status)}>
               {
                 taskStatus.map((status, index) => <option key={`${status}-${index}`} value={status}>{status}</option>)
               }

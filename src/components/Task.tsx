@@ -3,7 +3,7 @@ import { type Task, useStore } from "../zustand/store"
 import { FC } from "react"
 
 // const STATUS: string = "DONE"
-interface TaskProps {
+export interface TaskProps {
     task: Task
 }
 const Task: FC<TaskProps> = ({ task }) => {

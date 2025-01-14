@@ -1,24 +1,25 @@
 import { create } from "zustand"
-import { devtools, persist } from "zustand/middleware";
+import { devtools, persist, subscribeWithSelector } from "zustand/middleware";
 
-export type status = "PLANNED" | "ONGOING" | "DONE";
+export type Status = "PLANNED" | "ONGOING" | "DONE";
 
 export interface Task {
     id: string;
     title: string;
-    status: status;
+    status: Status;
 }
 
-interface Store {
+export interface Store {
+    tasksInOnGoing: Task[];
     tasks: Task[];
     draggedTask: Task | null;
-    addTask(id: string, title: string, status: status): void;
+    addTask(id: string, title: string, status: Status): void;
     deleteTask(title: string): void;
     setDraggedTask(task: Task | null): void;
-    moveTask(id: string, status: status): void;
+    moveTask(id: string, status: Status): void;
 }
 
-export const useStore = create<Store>()(persist(devtools((set) => ({
+export const useStore = create<Store>()(subscribeWithSelector(persist(devtools((set) => ({
     tasks: [],
     addTask: (id, title, status) => set((state) => ({ tasks: [...state.tasks, { id, title, status }] }), false, "addTask"),
     deleteTask: (id) => set((state) => ({
@@ -35,4 +36,14 @@ export const useStore = create<Store>()(persist(devtools((set) => ({
     }, false, "moveTask")
 
 })
-), { name: "task-app-zustand" }))
+), { name: "task-app-zustand" })))
+
+useStore.subscribe(
+    (store) => store.tasks,
+    (newTask, prevTask) => {
+        if (newTask !== prevTask) {
+            useStore.setState({ tasksInOnGoing: newTask.filter((task: Task) => task.status === "ONGOING") });
+            console.log("Tasks changed", newTask);
+        }
+    }
+);
