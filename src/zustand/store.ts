@@ -1,3 +1,4 @@
+import { produce } from "immer";
 import { create } from "zustand"
 import { devtools, persist, subscribeWithSelector } from "zustand/middleware";
 
@@ -21,7 +22,13 @@ export interface Store {
 
 export const useStore = create<Store>()(subscribeWithSelector(persist(devtools((set) => ({
     tasks: [],
-    addTask: (id, title, status) => set((state) => ({ tasks: [...state.tasks, { id, title, status }] }), false, "addTask"),
+    addTask: (id, title, status) =>
+        set(
+            produce((state) => {
+                state.tasks.push({ id, title, status })
+            })
+            // (state) => ({ tasks: [...state.tasks, { id, title, status }] })
+            , false, "addTask"),
     deleteTask: (id) => set((state) => ({
         tasks: state.tasks.filter(task => task.id !== id)
     }), false, "deleteTask"),
